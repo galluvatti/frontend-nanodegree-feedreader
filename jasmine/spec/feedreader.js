@@ -8,7 +8,7 @@
  * since some of these tests may require DOM elements. We want
  * to ensure they don't run until the DOM is ready.
  */
-$(function() {
+ $(function() {
     /* This is our first test suite - a test suite just contains
     * a related set of tests. This suite is all about the RSS
     * feeds definitions, the allFeeds variable in our application.
@@ -21,7 +21,7 @@ $(function() {
          * allFeeds in app.js to be an empty array and refresh the
          * page?
          */
-        it('are defined', function() {
+         it('are defined', function() {
             expect(allFeeds).toBeDefined();
             expect(allFeeds.length).not.toBe(0);
         });
@@ -31,7 +31,7 @@ $(function() {
          * in the allFeeds object and ensures it has a URL defined
          * and that the URL is not empty.
          */
-        it('should have a URL not empty', function() {
+         it('should have a URL not empty', function() {
             for(feed of allFeeds) {
                 expect(feed.url).toBeDefined();
                 expect(feed.url).not.toBe('');
@@ -49,7 +49,7 @@ $(function() {
                 expect(feed.name).not.toBe('');
             }
         });
-    });
+     });
 
     /* TODO: Write a new test suite named "The menu" */
     describe('The menu', function() {
@@ -62,7 +62,7 @@ $(function() {
          */
          it('should be hidden by default', function() {
             expect(body.classList).toContain('menu-hidden');
-         });
+        });
 
          /* TODO: Write a test that ensures the menu changes
           * visibility when the menu icon is clicked. This test
@@ -77,10 +77,11 @@ $(function() {
             
             menuIconLink.click();
             expect(body.classList).toContain('menu-hidden');
-          });
-    });
+        });
+      });
 
     /* TODO: Write a new test suite named "Initial Entries" */
+    describe('Initial entries', function() {
 
         /* TODO: Write a test that ensures when the loadFeed
          * function is called and completes its work, there is at least
@@ -88,11 +89,34 @@ $(function() {
          * Remember, loadFeed() is asynchronous so this test will require
          * the use of Jasmine's beforeEach and asynchronous done() function.
          */
+         beforeEach(function(done) {
+            loadFeed(0, done);
+        });
+         
+         it('should contain at least one entry', function() {
+             var feedContainer = document.getElementsByClassName('feed')[0];
+             expect(feedContainer.getElementsByClassName('entry').length).toBeGreaterThan(0);
+         });
+     });
 
     /* TODO: Write a new test suite named "New Feed Selection" */
-
+    describe('New Feed Selection', function() {
         /* TODO: Write a test that ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
+         var defaultFeedHtml;
+         beforeEach(function(done) {
+            loadFeed(0, function() {
+                defaultFeedHtml = document.getElementsByClassName('feed')[0].innerHTML;
+                loadFeed(1, done);
+            });
+            
+        });
+
+         it('should replace actual feed with new selected feed', function() {
+            var newFeedHtml = document.getElementsByClassName('feed')[0].innerHTML; 
+            expect(newFeedHtml).not.toBe(defaultFeedHtml);
+        });
+     });
 }());
